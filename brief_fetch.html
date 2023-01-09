@@ -15,33 +15,26 @@
 <body>
      <nav id="nav3" class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">Navbar</a>
+          <a class="navbar-brand" href="#">FOOD </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-              <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#home" >Home</a>
-              <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#search" onclick="searchrecette()" >Search</a>
+              <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#home" aria-expanded="true"aria-controls="home" >Home</a>
+              <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#search" onclick="searchrecette()" aria-expanded="false" aria-controls="search">Search</a>
             </div>
           </div>
         </div>
       </nav>
       <div id="accordien">
-        <div id="home" class="collapse indent" data-bs-parent="#accordien">
+        <div id="home" class="collapse indent show" data-bs-parent="#accordien">
           <div  class="d-md-flex flex-column align-items-center gap-5 vertical-box mt-5">
             <div class="input-group w-25">
                 <input type="search" class="form-control" id="input-Search" placeholder="Search....">
                 <button class="btn bg-dark text-white" type="button" id="btn-Search"><i class="fas fa-search"></i></button>
               </div>
-            <div id="cards-recette" class="d-flex justify-content-center flex-wrap gap-5 w-75">
-                <!-- <div class="card text-bg-dark" style="width: 18rem;">
-                    <img src="download.jpeg" class="card-img" alt="...">
-                    <div class="card-img-overlay">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    </div>
-                  </div>  -->
+            <div id="cards-recette" class="d-flex justify-content-center flex-wrap gap-3 w-75">
             </div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination" id="pagination-numbers">
@@ -51,7 +44,7 @@
         </div>
         <div id="search" class="collapse indent" data-bs-parent="#accordien" >
           <div  class="d-md-flex flex-column align-items-center gap-5 vertical-box mt-5">
-            <div class="input-group w-25">
+            <div class="d-md-flex  w-50">
               <select id="Category" class="form-select">
                 <option >All Category</option>
               </select>
@@ -60,24 +53,15 @@
               </select>
               <button class="btn bg-dark text-white" type="button" id="btn-Search1"><i class="fas fa-search"></i></button>
               </div>
-            <div id="card_search" class="d-flex justify-content-center flex-wrap gap-5 w-75">
-                <!-- <div class="card text-bg-dark" style="width: 18rem;">
-                    <img src="download.jpeg" class="card-img" alt="...">
-                    <div class="card-img-overlay">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    </div>
-                  </div>  -->
+            <div id="card_search" class="d-flex justify-content-center flex-wrap gap-3 w-75">
             </div>
             <nav aria-label="Page navigation example">
-                <ul class="pagination" id="paginatenumbers">
+                <ul class="pagination d-flex justify-content-center flex-wrap" id="paginatenumbers">
                 </ul>
               </nav>
         </div> 
         </div>
       </div>
-
-
     <!-- Modal -->
 <div class="modal fade" id="exampleModal"   tabindex="-1"  aria-hidden="true">
   <div class="modal-dialog">

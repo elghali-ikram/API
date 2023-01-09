@@ -20,6 +20,11 @@ function creatcard(objet) {
 }
 //  add load to window  for display cards 
 window.addEventListener("DOMContentLoaded", function () {
+  randomdata()
+
+});
+//get 6 recette random
+function randomdata() {
   for (let i = 0; i < 6; i++) {
     const address = fetch("https://www.themealdb.com/api/json/v1/1/random.php")
       .then((response) => response.json())
@@ -32,7 +37,8 @@ window.addEventListener("DOMContentLoaded", function () {
     };
     printAddress();
   }
-});
+  
+}
 // function for get ingredient and mesure
 function getingredient(data) {
   let Arr_ingredient = []
@@ -73,7 +79,7 @@ async function Getinfo(idcard) {
     <h5>${recette.meals[0].strMeal}</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
-  <div  class="modal-body">
+  <div  class="modal-body scrollable">
     <div class="card" >
       <iframe  height="315" src="${`https://www.youtube.com/embed/${res[1]}`}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       <div class="card-body">
@@ -97,7 +103,7 @@ function pagination(queryset, page, rows) {
     'pages': pages
   }
 }
-// function for add button
+// function for add buttons of pagination
 function pagebuttons() {
   let databtn = pagination(state.queryset, state.page, state.rows);
   pagination_numbers.innerHTML = ""
@@ -136,30 +142,39 @@ function pagebuttons() {
       for (let i = 0; i < data.queryset.length; i++) {
         creatcard(data.queryset[i])
       }   
-
-   
     });
   }
 }
 //search
 btn_Search.addEventListener("click", async function () {
-  const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${input_Search.value}`)
-  const recette = await response.json()
-  cards.innerHTML = ""
-  output = ""
-  state = {
-    'queryset': recette.meals,
-    'page': 1,
-    'rows': 6,    
+  if(input_Search.value=="")
+  {
+    output=""
+    pagination_numbers.innerHTML=""
+    randomdata()
   }
-  if (recette.meals) {
-    let array = pagination(state.queryset, state.page, state.rows);
-    for (let i = 0; i < array.queryset.length; i++) {
-      creatcard(array.queryset[i]);
+  else
+  {
+    const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${input_Search.value}`)
+    const recette = await response.json()
+    cards.innerHTML = ""
+    output = ""
+    state = {
+      'queryset': recette.meals,
+      'page': 1,
+      'rows': 6,    
     }
-    pagebuttons()
+    if (recette.meals) {
+      let array = pagination(state.queryset, state.page, state.rows);
+      for (let i = 0; i < array.queryset.length; i++) {
+        creatcard(array.queryset[i]);
+      }
+      pagebuttons()
+    }
+    else {
+      cards.innerHTML = `<div><h3>Pas de résultats</h3></div>`
+    }
+
   }
-  else {
-    console.log("makynch")
-  }
+
 })

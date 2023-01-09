@@ -10,9 +10,9 @@ window.addEventListener("load",function () {
   Getarea() 
   
 })
+// function for search  in lamb and moroccan
 async function searchrecette()
 {
-  console.log("dkhels");
   if(Category.value=="Lamb" || Area.value=="Moroccan")
   {
     let arrayc = []
@@ -42,11 +42,11 @@ async function searchrecette()
     stat = {
       'queryset': arraresult,
       'page': 1,
-      'rows': 1,    
+      'rows': 6,    
     }
     if(arraresult.length==0)
     {
-      card.innerHTML = ""
+      card.innerHTML = `<div><h3>Pas de résultats</h3></div>`
     }
     else
     {
@@ -59,9 +59,8 @@ async function searchrecette()
     }
 
   }
-
 }
-
+// function to get category
 async function Getcategory() {
     const response = await fetch(`https://www.themealdb.com/api/json/v1/1/list.php?c=list`)
     const recette = await response.json()
@@ -74,6 +73,7 @@ async function Getcategory() {
         }
     }
 }
+// function to get area
 async function Getarea() {
     const response = await fetch(`https://www.themealdb.com/api/json/v1/1/list.php?a=list`)
     const recette = await response.json()
@@ -86,6 +86,7 @@ async function Getarea() {
         }
     }
 }
+// function for create card
 function creatsearch(objet) {
     out += `
           <div class="card text-bg-dark shadow-lg mb-5 bg-body rounded" onclick="Getinfo(${objet.idMeal})"  style="width: 18rem;" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -96,6 +97,42 @@ function creatsearch(objet) {
         </div> `
     card.innerHTML = out
 }
+// function for all area or all category
+async function allsearch(url) {
+  let array=[]
+  let arraresult=[]
+  const response1 = await fetch(url)
+  const recette1 = await response1.json()
+  recette1.meals.forEach(element => {
+    array.push(element.idMeal)
+  });
+  console.log(array);
+  for (let i = 0; i < array.length; i++) {
+    const mealrespo = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${array[i]}`)
+    const respo = await mealrespo.json()
+    arraresult.push(respo.meals[0])
+  }
+  stat = {
+    'queryset': arraresult,
+    'page': 1,
+    'rows': 6,    
+  }
+  if(arraresult.length==0)
+  {
+    card.innerHTML = `<div><h3>Pas de résultats</h3></div>`
+  }
+  else
+  {
+    card.innerHTML = ""
+    let datastate= pagination1(stat.queryset,stat.page,stat.rows)
+    for (let i = 0; i < datastate.queryset.length; i++) {
+      creatsearch(datastate.queryset[i])
+    }
+    page1buttons()
+  }
+  console.log(arraresult);
+}
+// add click to button search
 Search_btn1.addEventListener("click", async function search() {
   paginate_numbers.innerHTML = ""
     out=""
@@ -104,77 +141,39 @@ Search_btn1.addEventListener("click", async function search() {
     let arrayc = []
     let arraya = []
     let arraresult=[]
-    let intersection = arrayc.filter(function (e) {
-      return arraya.indexOf(e) > -1;
-    });
-    console.log(intersection);
-    if(category=="All Category")
+    if(category=="All Category" && area=="All Area")
     {
-      const response1 = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${area}`)
-      const recette1 = await response1.json()
-      recette1.meals.forEach(element => {
-          arraya.push(element.idMeal)
-      });
-      console.log(arraya);
-      for (let i = 0; i < arraya.length; i++) {
-          const mealrespo = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${arraya[i]}`)
-          const respo = await mealrespo.json()
-          arraresult.push(respo.meals[0])
+      const respoalla = await fetch(`https://www.themealdb.com/api/json/v1/1/list.php?a=list`)
+      const alla = await respoalla.json()
+      for (let i = 0; i < alla.meals.length; i++) {
+        const respoarea = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${alla.meals[i].strArea}`)
+        const allarea = await respoarea.json()
+        allarea.meals.forEach(element => {
+          arraresult.push(element)
+        });
       }
+      console.log(arraresult);
       stat = {
         'queryset': arraresult,
         'page': 1,
-        'rows': 1,    
+        'rows': 6,    
       }
-      if(arraresult.length==0)
-      {
-        card.innerHTML = ""
-      }
-      else
-      {
-        card.innerHTML = ""
-        let datastate= pagination1(stat.queryset,stat.page,stat.rows)
-        for (let i = 0; i < datastate.queryset.length; i++) {
-          creatsearch(datastate.queryset[i])
-        }
-        page1buttons()
-      }
-      console.log(arraresult);
 
+        card.innerHTML = "";
+        let datastate = pagination1(stat.queryset, stat.page, stat.rows);
+        for (let i = 0; i < datastate.queryset.length; i++) {
+          creatsearch(datastate.queryset[i]);
+        }
+        page1buttons();
+      
+    }
+    else if(category=="All Category")
+    {
+      allsearch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${area}`)
     }
     else if(area=="All Area")
     {
-      const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
-      const recette = await response.json()
-      recette.meals.forEach(element => {
-          arrayc.push(element.idMeal)
-      });
-      console.log(arrayc);
-      for (let i = 0; i < arrayc.length; i++) {
-          const mealrespo = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${arrayc[i]}`)
-          const respo = await mealrespo.json()
-          arraresult.push(respo.meals[0])
-      }
-      stat = {
-        'queryset': arraresult,
-        'page': 1,
-        'rows': 1,    
-      }
-      if(arraresult.length==0)
-      {
-        card.innerHTML = ""
-      }
-      else
-      {
-        card.innerHTML = ""
-        let datastate= pagination1(stat.queryset,stat.page,stat.rows)
-        for (let i = 0; i < datastate.queryset.length; i++) {
-          creatsearch(datastate.queryset[i])
-        }
-        page1buttons()
-      }
-      console.log(arraresult);
-
+      allsearch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
     }
     else
     {
@@ -202,11 +201,11 @@ Search_btn1.addEventListener("click", async function search() {
       stat = {
         'queryset': arraresult,
         'page': 1,
-        'rows': 1,    
+        'rows': 6,    
       }
       if(arraresult.length==0)
       {
-        card.innerHTML = ""
+        card.innerHTML = `<div><h3>Pas de résultats</h3></div>`
       }
       else
       {
@@ -218,7 +217,6 @@ Search_btn1.addEventListener("click", async function search() {
         page1buttons()
       }
       console.log(arraresult);
-
     }
 
 })
@@ -261,10 +259,10 @@ function pagination1(queryset, page, rows) {
         }
         else
         {
-            stat.page = Number(btn_pagination[i].innerText)
+          stat.page = Number(btn_pagination[i].innerText)
         }
         btn_pagination.forEach(element => {
-                element.classList.remove("active")
+          element.classList.remove("active")
         });
         btn_pagination[i].classList.add("active");
         let data = pagination1(stat.queryset, stat.page, stat.rows);
